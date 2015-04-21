@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.brueckcomputer</groupId>
+    <artifactId>Neo4jControl</artifactId>
+    <name>neo4jctl</name>
+
+    <packaging>jar</packaging>
+    <version>0.1</version>
+
+    <organization>
+        <!-- Used as the 'Vendor' for JNLP generation -->
+        <name>Brück-Computer</name>
+    </organization>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <javafx.application.name>Neo4jControl</javafx.application.name>
+        <project.main.class>de.brueckcomputer.neo4jcontrol.MainApp</project.main.class>
+        <javafx.tools.ant.jar>${java.home}/../lib/ant-javafx.jar</javafx.tools.ant.jar>
+    </properties>
+
+    <build>
+
+        <plugins>
+
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <finalName>${javafx.application.name}</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <archive>
+                        <manifestEntries>
+                            <Main-Class>${project.main.class}</Main-Class>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>create-deployment-bundle</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target xmlns:fx="javafx:com.sun.javafx.tools.ant">
+                                <taskdef uri="javafx:com.sun.javafx.tools.ant"
+                                         resource="com/sun/javafx/tools/ant/antlib.xml"
+                                         classpath="${project.basedir}:${project.basedir}/src/main/deploy:${javafx.tools.ant.jar}"/>
+
+                                <fx:deploy nativeBundles="all" outdir="${project.build.directory}/dist"
+                                           outfile="${project.build.finalName}" verbose="true">
+                                    <fx:application name="${javafx.application.name}" version="${project.version}"
+                                                    mainClass="${project.main.class}"/>
+                                    <fx:info title="${javafx.application.name}" vendor="cryptomator.org"
+                                             copyright="cryptomator.org" license="MIT" category="Utility"/>
+                                    <fx:platform javafx="2.2+" j2se="8.0"/>
+                                    <fx:resources>
+                                        <fx:fileset dir="${project.build.directory}"
+                                                    includes="${javafx.application.name}.jar"/>
+                                    </fx:resources>
+                                    <fx:permissions elevated="false"/>
+                                    <fx:preferences install="true"/>
+
+                                </fx:deploy>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+
+
+    </build>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>1.9</version>
+        </dependency>
+
+    </dependencies>
+
+</project>

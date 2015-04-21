@@ -1,0 +1,22 @@
+== System Tray tool for common tasks on a local Neo4j server
+
+I write this little tool to help me for the following tasks on my development machine:
+
+* Launch and stop a local Neo4j server instance
+* Check the server status
+* Open the Neo4j Browser, the documentation and the Cypher Refcard
+
+image::https://github.com/abrueck/raw/master/screenshot.png[]
+
+
+=== Compiling and installation
+
+Only execute "mvn package" and you can find the binaries in the "target/dist/bundles" directory.
+After starting the tool the fist time, open the settings dialog enter the path to the Neo4j
+server directory.
+
+
+=== Limitations and issues
+
+This is the first release of this tool and it has a lot of limitations and issues. If you have
+ideas or issues please please let me know.
