@@ -6,8 +6,7 @@ I write this little tool to help me for the following tasks on my development ma
 * Check the server status
 * Open the Neo4j Browser, the documentation and the Cypher Refcard
 
-image::https://github.com/abrueck/raw/master/screenshot.png[]
-
+image::https://raw.githubusercontent.com/abrueck/neo4jcontrol/master/screenshot.png[]
 
 === Compiling and installation
 
