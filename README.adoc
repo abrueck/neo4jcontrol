@@ -11,7 +11,7 @@ image::https://raw.githubusercontent.com/abrueck/neo4jcontrol/master/screenshot.
 === Compiling and installation
 
 Only execute "mvn package" and you can find the binaries in the "target/dist/bundles" directory.
-After starting the tool the fist time, open the settings dialog enter the path to the Neo4j
+After starting the tool the fist time, open the settings dialog and enter the path to the Neo4j
 server directory.
 
 

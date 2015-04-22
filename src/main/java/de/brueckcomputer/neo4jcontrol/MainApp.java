@@ -23,15 +23,17 @@ import java.io.InputStreamReader;
 
 /**
  * @author Andreas Brueck
- *
- * Uses idea and sourcecode from https://gist.github.com/jewelsea/e231e89e8d36ef4e5d8a
+ *         <p/>
+ *         Uses idea and sourcecode from https://gist.github.com/jewelsea/e231e89e8d36ef4e5d8a
  */
 public class MainApp extends Application {
 
     private MenuItem launcherItem;
+    private MenuItem browserItem;
     private String serverResponse;
     private int serverStatus;
     private Context context;
+    private java.awt.TrayIcon trayIcon;
 
     public MainApp() {
         context = Context.getInstance();
@@ -59,6 +61,7 @@ public class MainApp extends Application {
      */
     private void addAppToTray() {
         try {
+
             // ensure awt toolkit is initialized.
             java.awt.Toolkit.getDefaultToolkit();
 
@@ -69,14 +72,14 @@ public class MainApp extends Application {
                 Platform.exit();
             }
 
+            final java.awt.SystemTray tray = java.awt.SystemTray.getSystemTray();
+
             // set up a system tray icon.
-            java.awt.SystemTray tray = java.awt.SystemTray.getSystemTray();
-            java.awt.Image image = ImageIO.read(getClass().getResource("neo4j.png"));
-            java.awt.TrayIcon trayIcon = new java.awt.TrayIcon(image);
+            Image image = ImageIO.read(getClass().getResource("neo4j.png"));
+            trayIcon = new java.awt.TrayIcon(image);
 
             // if the user double-clicks on the tray icon, show the main app stage.
             trayIcon.addActionListener(event -> Platform.runLater(this::openBrowser));
-
 
             // setup the popup menu for the application.
             final java.awt.PopupMenu popup = new java.awt.PopupMenu();
@@ -86,7 +89,6 @@ public class MainApp extends Application {
             launcherItem = new MenuItem("Launch Neo4j");
             launcherItem.addActionListener(event -> Platform.runLater(this::launcherClick));
             popup.add(launcherItem);
-            refreshServerState(true);
 
             MenuItem item = new MenuItem("Status");
             item.addActionListener(event -> Platform.runLater(this::showStatus));
@@ -94,14 +96,14 @@ public class MainApp extends Application {
 
             popup.addSeparator();
 
-            item = new MenuItem("Neo4j Browser");
-            item.addActionListener(event -> Platform.runLater(this::openBrowser));
+            browserItem = new MenuItem("Neo4j Browser");
+            browserItem.addActionListener(event -> Platform.runLater(this::openBrowser));
             // the convention for tray icons seems to be to set the default icon for opening
             // the application stage in a bold font.
             java.awt.Font defaultFont = java.awt.Font.decode(null);
             java.awt.Font boldFont = defaultFont.deriveFont(java.awt.Font.BOLD);
-            item.setFont(boldFont);
-            popup.add(item);
+            browserItem.setFont(boldFont);
+            popup.add(browserItem);
 
             item = new MenuItem("Documentation");
             item.addActionListener(event -> Platform.runLater(this::openDocumentation));
@@ -120,26 +122,32 @@ public class MainApp extends Application {
             // to really exit the application, the user must go to the system tray icon
             // and select the exit option, this will shutdown JavaFX and remove the
             // tray icon (removing the tray icon will also shut down AWT).
-
             item = new java.awt.MenuItem("Exit");
             item.addActionListener(event -> {
                 Platform.exit();
                 tray.remove(trayIcon);
             });
             popup.add(item);
-            trayIcon.setPopupMenu(popup);
 
+            // Set popup to tryicon and add it to tray
+            trayIcon.setPopupMenu(popup);
             tray.add(trayIcon);
 
-        } catch (java.awt.AWTException | IOException e) {
-            System.out.println("Unable to init system tray");
+            // Refresh server status and UI
+            refreshServerState(true);
+            refreshUIStatus();
+
+        } catch (IOException | AWTException e) {
             e.printStackTrace();
             Dialogs.showExceptionDialog(e);
         }
+
     }
+
 
     private void showStatus() {
         refreshServerState(true);
+        refreshUIStatus();
         Dialogs.showInformation(
                 String.format("GET on [%s], status code [%d]", context.getSettings().getProperty(Context.STATUS_URL), serverStatus),
                 serverResponse);
@@ -162,6 +170,7 @@ public class MainApp extends Application {
                 Dialogs.showExceptionDialog(e);
             }
             refreshServerState(true);
+            refreshUIStatus();
         }
     }
 
@@ -172,7 +181,7 @@ public class MainApp extends Application {
         try {
             Client client = Client.create();
             String user = context.getSettings().getProperty(Context.SERVER_USER);
-            if (user != null && !user.isEmpty() ) {
+            if (user != null && !user.isEmpty()) {
                 String password = context.getSettings().getProperty(Context.SERVER_PASSWORD);
                 client.addFilter(new HTTPBasicAuthFilter(user, password));
             }
@@ -181,9 +190,8 @@ public class MainApp extends Application {
                     .type(MediaType.APPLICATION_JSON).get(ClientResponse.class);
 
             serverStatus = response.getStatus();
-            if (response.getStatus() == 200 || response.getStatus() == 401) {
+            if (serverStatus == 200 || serverStatus == 401) {
                 serverResponse = response.getEntity(String.class);
-                launcherItem.setLabel("Stop Neo4j");
             }
             if (printResponse) {
                 System.out.println(String.format("GET on [%s], status code [%d]", context.getSettings().getProperty(Context.STATUS_URL), serverStatus));
@@ -194,12 +202,41 @@ public class MainApp extends Application {
             response.close();
 
         } catch (Exception e) {
-            launcherItem.setLabel("Launch Neo4j");
-
+            if (printResponse) {
+                System.out.println(String.format("GET on [%s], cannot connect", context.getSettings().getProperty(Context.STATUS_URL)));
+                if (serverResponse != null) {
+                    System.out.println(serverResponse);
+                }
+            }
         }
+    }
 
 
+    private boolean serverLaunched() {
+        return (serverStatus == 200 || serverStatus == 401) && serverResponse != null;
+    }
+
+
+    private void refreshUIStatus() {
+        String imageName;
+        if (serverLaunched()) {
+            imageName = "neo4j-launched.png";
+            launcherItem.setLabel("Stop Neo4j");
+            browserItem.setEnabled(true);
+        } else {
+            imageName = "neo4j.png";
+            launcherItem.setLabel("Launch Neo4j");
+            browserItem.setEnabled(false);
+        }
         launcherItem.setEnabled(context.validServerPath());
+
+        try {
+            Image image = ImageIO.read(getClass().getResource(imageName));
+            trayIcon.setImage(image);
+        } catch (IOException e) {
+            e.printStackTrace();
+            Dialogs.showExceptionDialog(e);
+        }
     }
 
 
@@ -213,7 +250,7 @@ public class MainApp extends Application {
             return null;
         }
 
-        StringBuffer commandOutput = new StringBuffer();
+        StringBuilder commandOutput = new StringBuilder();
         new Thread(() -> {
             BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line = null;
@@ -241,19 +278,21 @@ public class MainApp extends Application {
     private void launcherClick() {
         refreshServerState(false);
         String command;
-        if (serverResponse == null) {
-            command = context.getServerCommand().toAbsolutePath().toString() + " start";
-        } else {
+        if (serverLaunched()) {
             command = context.getServerCommand().toAbsolutePath().toString() + " stop";
+        } else {
+            command = context.getServerCommand().toAbsolutePath().toString() + " start";
         }
         String output = runCommand(command);
         refreshServerState(true);
         String message;
-        if (serverResponse == null) {
+        if (serverLaunched()) {
             message = "Server is not running.";
         } else {
             message = "Server is running.";
         }
+
+        refreshUIStatus();
         Dialogs.showInformation(message, output);
     }
 

@@ -1,0 +1,5 @@
+== ChangeLog
+
+* [enh] System tray icon shows the server state
+* [enh] "Neo4j Browser" is only enable, when server is launched
+
