@@ -8,6 +8,12 @@ I write this little tool to help me for the following tasks on my development ma
 
 image::https://raw.githubusercontent.com/abrueck/neo4jcontrol/master/screenshot.png[]
 
+* It is also possible to manage a Neo4j server instance on a remote server. Just set a custom command to
+start and stop the Neo4j server in the settings dialog.
+
+image::https://raw.githubusercontent.com/abrueck/neo4jcontrol/master/settings.png[]
+
+
 === Compiling and installation
 
 Only execute "mvn package" and you can find the binaries in the "target/dist/bundles" directory.

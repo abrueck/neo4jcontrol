@@ -16,6 +16,8 @@ import java.util.Properties;
 public class Context {
 
     public final static String SERVER_PATH = "server.path";
+    public final static String SERVER_START = "server.start";
+    public final static String SERVER_STOP = "server.stop";
     public final static String SERVER_USER = "server.user";
     public final static String SERVER_PASSWORD = "server.password";
     public final static String STATUS_URL = "status.url";
@@ -75,20 +77,30 @@ public class Context {
 
 
     public boolean validServerPath() {
-        return getServerCommand() != null;
+        return getServerCommand(true) != null && getServerCommand(false) != null;
     }
 
 
-    public Path getServerCommand() {
+    public String getServerCommand(boolean launch) {
         String serverPath = settings.getProperty(SERVER_PATH);
+        String startCmd = settings.getProperty(SERVER_START);
+        String stopCmd = settings.getProperty(SERVER_STOP);
+
+        if (launch && startCmd != null && !startCmd.isEmpty()) {
+            return startCmd;
+        }
+        if (!launch && stopCmd != null && !stopCmd.isEmpty()) {
+            return stopCmd;
+        }
+
         if (serverPath == null || serverPath.isEmpty()) {
             return null;
         }
         if (Files.exists(Paths.get(serverPath,"bin","neo4j"))) {
-            return Paths.get(serverPath,"bin","neo4j");
+            return Paths.get(serverPath,"bin","neo4j").toAbsolutePath().toString() + (launch ? " start" : " stop");
         }
         if (Files.exists(Paths.get(serverPath,"bin","neo4j.bat"))) {
-            return Paths.get(serverPath,"bin","neo4j.bat");
+            return Paths.get(serverPath,"bin","neo4j.bat").toAbsolutePath().toString() + (launch ? " start" : " stop");
         }
         return null;
     }

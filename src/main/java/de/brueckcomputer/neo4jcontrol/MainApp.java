@@ -1,5 +1,6 @@
 package de.brueckcomputer.neo4jcontrol;
 
+import com.martiansoftware.jsap.CommandLineTokenizer;
 import com.sun.deploy.uitoolkit.impl.fx.HostServicesFactory;
 import com.sun.javafx.application.HostServicesDelegate;
 import com.sun.jersey.api.client.Client;
@@ -243,7 +244,8 @@ public class MainApp extends Application {
     private String runCommand(String command) {
         final Process p;
         try {
-            p = Runtime.getRuntime().exec(command);
+            String[] cmd = CommandLineTokenizer.tokenize(command);
+            p = Runtime.getRuntime().exec(cmd);
         } catch (IOException e) {
             e.printStackTrace();
             Dialogs.showExceptionDialog(e);
@@ -277,12 +279,7 @@ public class MainApp extends Application {
 
     private void launcherClick() {
         refreshServerState(false);
-        String command;
-        if (serverLaunched()) {
-            command = context.getServerCommand().toAbsolutePath().toString() + " stop";
-        } else {
-            command = context.getServerCommand().toAbsolutePath().toString() + " start";
-        }
+        String command = context.getServerCommand(!serverLaunched());
         String output = runCommand(command);
         refreshServerState(true);
         String message;

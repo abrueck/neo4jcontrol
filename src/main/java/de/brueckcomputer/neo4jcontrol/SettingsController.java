@@ -3,8 +3,11 @@ package de.brueckcomputer.neo4jcontrol;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.net.URL;
@@ -20,6 +23,12 @@ public class SettingsController implements Initializable {
 
     @FXML
     private TextField serverPath;
+
+    @FXML
+    private TextField startServer;
+
+    @FXML
+    private TextField stopServer;
 
     @FXML
     private TextField statusUrl;
@@ -40,6 +49,7 @@ public class SettingsController implements Initializable {
     private TextField refcardUrl;
 
 
+
     public SettingsController() {
         context = Context.getInstance();
     }
@@ -55,6 +65,8 @@ public class SettingsController implements Initializable {
     public void handleOk(ActionEvent event) {
         Properties settings = context.getSettings();
         settings.setProperty(Context.SERVER_PATH, serverPath.getText());
+        settings.setProperty(Context.SERVER_START, startServer.getText());
+        settings.setProperty(Context.SERVER_STOP, stopServer.getText());
         settings.setProperty(Context.STATUS_URL, statusUrl.getText());
         settings.setProperty(Context.SERVER_USER, username.getText());
         settings.setProperty(Context.SERVER_PASSWORD, password.getText());
@@ -76,6 +88,8 @@ public class SettingsController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         Properties settings = context.getSettings();
         serverPath.setText(settings.getProperty(Context.SERVER_PATH));
+        startServer.setText(settings.getProperty(Context.SERVER_START));
+        stopServer.setText(settings.getProperty(Context.SERVER_STOP));
         statusUrl.setText(settings.getProperty(Context.STATUS_URL));
         username.setText(settings.getProperty(Context.SERVER_USER));
         password.setText(settings.getProperty(Context.SERVER_PASSWORD));

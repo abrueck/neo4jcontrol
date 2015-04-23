@@ -5,52 +5,73 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="345.0" prefWidth="490.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.brueckcomputer.neo4jcontrol.SettingsController">
-   <center>
-      <GridPane hgap="10.0" BorderPane.alignment="CENTER">
-        <columnConstraints>
-          <ColumnConstraints fillWidth="false" halignment="RIGHT" minWidth="130.0" prefWidth="130.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
+<VBox minHeight="300.0" minWidth="400.0" prefHeight="397.0" prefWidth="490.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.brueckcomputer.neo4jcontrol.SettingsController">
+   <children>
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" VBox.vgrow="ALWAYS">
          <children>
-            <Label alignment="CENTER_RIGHT" text="Path to Neo4j" />
-            <TextField fx:id="serverPath" GridPane.columnIndex="1" />
-            <Label text="Status URL" GridPane.rowIndex="1" />
-            <TextField fx:id="statusUrl" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <Label text="User" GridPane.rowIndex="2" />
-            <TextField fx:id="username" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <Label text="Password" GridPane.rowIndex="3" />
-            <PasswordField fx:id="password" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Label text="Browser URL" GridPane.rowIndex="4" />
-            <TextField fx:id="browserUrl" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <Label text="Documentation URL" GridPane.rowIndex="5" />
-            <TextField fx:id="documentationUrl" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <Label text="Cypher Refcard URL" GridPane.rowIndex="6" />
-            <TextField fx:id="refcardUrl" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <Label alignment="CENTER_RIGHT" minWidth="130.0" prefWidth="130.0" text="Path to Neo4j" />
+                  <TextField fx:id="serverPath" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+            <HBox fillHeight="false" spacing="10.0">
+                <Label alignment="CENTER_RIGHT" minWidth="130.0" prefWidth="130.0" text="Start Neo4j command" />
+                <TextField fx:id="startServer" HBox.hgrow="ALWAYS" />
+            </HBox>
+             <HBox fillHeight="false" spacing="10.0">
+                 <Label alignment="CENTER_RIGHT" minWidth="130.0" prefWidth="130.0" text="Stop Neo4j command" />
+                 <TextField fx:id="stopServer" HBox.hgrow="ALWAYS" />
+            </HBox>
+            <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <Label alignment="CENTER_RIGHT" minWidth="130.0" prefWidth="130.0" text="Status URL" />
+                  <TextField fx:id="statusUrl" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+             <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <Label alignment="CENTER_RIGHT" minWidth="130.0" prefWidth="130.0" text="User" />
+                  <TextField fx:id="username" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+             <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <Label alignment="CENTER_RIGHT" minWidth="130.0" prefWidth="130.0" text="Password" />
+                  <PasswordField fx:id="password" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+             <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <Label alignment="CENTER_RIGHT" minWidth="130.0" prefWidth="130.0" text="Browser URL" />
+                  <TextField fx:id="browserUrl" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+             <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <Label alignment="CENTER_RIGHT" minWidth="130.0" prefWidth="130.0" text="Documentation URL" />
+                  <TextField fx:id="documentationUrl" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+             <HBox fillHeight="false" spacing="10.0">
+               <children>
+                  <Label alignment="CENTER_RIGHT" minWidth="130.0" prefWidth="130.0" text="Cypher Refcard URL" />
+                  <TextField fx:id="refcardUrl" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
          </children>
-         <BorderPane.margin>
+         <VBox.margin>
             <Insets left="15.0" right="15.0" top="15.0" />
-         </BorderPane.margin>
-      </GridPane>
-   </center>
-   <bottom>
-      <HBox alignment="CENTER_RIGHT" fillHeight="false" prefHeight="0.0" prefWidth="0.0" spacing="10.0" BorderPane.alignment="CENTER">
+         </VBox.margin>
+      </VBox>
+      <HBox alignment="CENTER_RIGHT" fillHeight="false" prefHeight="0.0" prefWidth="0.0" spacing="10.0">
          <children>
             <Button fx:id="okButton" defaultButton="true" mnemonicParsing="false" onAction="#handleOk" text="OK" />
             <Button fx:id="cancelButton" mnemonicParsing="false" onAction="#handleCancel" text="Cancel" />
          </children>
-         <BorderPane.margin>
+         <VBox.margin>
             <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
-         </BorderPane.margin>
+         </VBox.margin>
       </HBox>
-   </bottom>
-</BorderPane>
+   </children>
+</VBox>
