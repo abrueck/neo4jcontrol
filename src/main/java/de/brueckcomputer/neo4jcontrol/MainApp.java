@@ -56,7 +56,6 @@ public class MainApp extends Application {
 
     }
 
-
     /**
      * Sets up a system tray icon for the application.
      */
@@ -78,6 +77,7 @@ public class MainApp extends Application {
             // set up a system tray icon.
             Image image = ImageIO.read(getClass().getResource("neo4j.png"));
             trayIcon = new java.awt.TrayIcon(image);
+            trayIcon.setImageAutoSize(true);
 
             // if the user double-clicks on the tray icon, show the main app stage.
             trayIcon.addActionListener(event -> Platform.runLater(this::openBrowser));
