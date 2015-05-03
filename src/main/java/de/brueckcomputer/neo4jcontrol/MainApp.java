@@ -291,6 +291,7 @@ public class MainApp extends Application {
 
         refreshUIStatus();
         Dialogs.showInformation(message, output);
+        refreshUIStatus();
     }
 
     private void showWebsite(String website) {
